@@ -1,0 +1,36 @@
+FROM ubuntu:18.04 as init-client
+
+RUN apt-get update
+
+RUN apt-get -y install \
+  libsdl2-dev \
+  libsdl2-image-dev \
+  libsdl2-mixer-dev \
+  libyaml-cpp-dev
+
+WORKDIR /app
+
+FROM init-client AS builder-client
+
+RUN apt-get -y install \
+  build-essential \
+  cmake \
+  pkg-config \
+  cmake-data
+
+COPY CMakeLists-client.txt ./CMakeLists.txt
+COPY src ./src/
+COPY include ./include/
+
+WORKDIR /app/build
+RUN cmake ..
+RUN make
+
+FROM init-client
+
+COPY --from=builder-client /app/build/portal2d /app/portal2d
+COPY data/conf/client.conf client.conf
+COPY data/sounds ./sounds/
+COPY data/sprites ./sprites/  
+
+ENTRYPOINT [ "/app/portal2d" ]

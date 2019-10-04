@@ -1,0 +1,31 @@
+version: "2"
+networks:
+  internal_network:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+      - subnet: 172.24.24.0/24
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    ports:
+      - 8080:8080
+    networks: 
+      - internal_network
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile-client
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      DISPLAY: $DISPLAY
+      XDG_RUNTIME_DIR: ""
+      ALSA_CARD: 0
+    networks: 
+      - internal_network

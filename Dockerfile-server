@@ -1,0 +1,32 @@
+FROM ubuntu:18.04 AS init-server
+
+RUN apt-get update
+RUN apt-get -y install \
+  libbox2d-dev \
+  libyaml-cpp-dev
+
+WORKDIR /app
+
+FROM init-server AS builder-server
+
+RUN apt-get -y install \
+  build-essential \
+  cmake \
+  pkg-config \
+  cmake-data
+
+COPY CMakeLists-server.txt ./CMakeLists.txt
+COPY src ./src/
+COPY include ./include/
+
+WORKDIR /app/build
+RUN cmake ..
+RUN make
+
+FROM init-server
+
+COPY --from=builder-server /app/build/portal2d-server /app/portal2d-server
+COPY data/conf/server.conf server.conf
+COPY data/maps ./maps/
+
+ENTRYPOINT [ "/app/portal2d-server" ]
