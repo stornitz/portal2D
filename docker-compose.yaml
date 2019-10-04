@@ -7,6 +7,15 @@ networks:
       config:
       - subnet: 172.24.24.0/24
 services:
+  editor:
+    build:
+      context: .
+      dockerfile: Dockerfile-editor
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ./editor/editor.html:/app/editor.html
+    environment:
+      DISPLAY: $DISPLAY
   server:
     build:
       context: .
