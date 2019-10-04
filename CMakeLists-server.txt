@@ -1,0 +1,48 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(portal2d-server)
+
+##
+## Config
+##
+
+# Server
+set(MAPS_DIRECTORY ./maps)
+
+# g++ flag: -O0 or -O3
+set(OPTIMIZE_BINARIES -O3)
+
+##
+## Sources
+##
+
+file(GLOB_RECURSE server_sources src/server/*)
+file(GLOB_RECURSE common_sources src/common/*)
+
+##
+## Dependencies
+##
+
+include(FindPkgConfig)
+
+# YAML
+pkg_search_module(YAML_CPP REQUIRED yaml-cpp)
+
+# Box2D
+pkg_search_module(BOX2D REQUIRED box2d)
+
+include_directories(include/ ${YAML_CPP_INCLUDEDIR})
+
+##
+## Executables
+##
+
+add_compile_options(-std=c++11 -Wall -Wextra -Werror -pedantic -pedantic-errors ${OPTIMIZE_BINARIES} -ggdb -DDEBUG -fno-inline)
+add_definitions(
+    -DSERVER_CONF_FILE="server.conf"
+    -DMAPS_DIRECTORY="${MAPS_DIRECTORY}/")
+
+# Server
+add_executable(server src/server_main.cpp ${server_sources} ${common_sources})
+target_link_libraries(server "-pthread" ${BOX2D_LIBRARIES} ${YAML_CPP_LIBRARIES})
+set_target_properties(server PROPERTIES OUTPUT_NAME portal2d-server)

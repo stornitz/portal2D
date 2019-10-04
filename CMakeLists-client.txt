@@ -1,0 +1,49 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(portal2d-client)
+
+##
+## Config
+##
+
+set(OPTIMIZE_BINARIES -O3)
+
+# Client
+set(ASSETS_DIRECTORY .)
+
+##
+## Sources
+##
+
+file(GLOB_RECURSE client_sources src/client/*)
+file(GLOB_RECURSE common_sources src/common/*)
+
+##
+## Dependencies
+##
+
+include(FindPkgConfig)
+
+# SDL2
+pkg_search_module(SDL2 REQUIRED sdl2)
+pkg_search_module(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+pkg_search_module(SDL2MIXER REQUIRED SDL2_mixer>=2.0.0)
+
+# YAML
+pkg_search_module(YAML_CPP REQUIRED yaml-cpp)
+
+include_directories(include/ ${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS} ${SDL2MIXER_INCLUDE_DIRS} ${YAML_CPP_INCLUDEDIR})
+
+##
+## Executables
+##
+
+add_compile_options(-std=c++11 -Wall -Wextra -Werror -pedantic -pedantic-errors ${OPTIMIZE_BINARIES} -ggdb -DDEBUG -fno-inline)
+add_definitions(
+    -DCLIENT_CONF_FILE="client.conf"
+    -DASSETS_DIRECTORY="${ASSETS_DIRECTORY}/")
+
+# Client
+add_executable(client src/client_main.cpp ${client_sources} ${common_sources})
+target_link_libraries(client "-pthread" ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES} ${SDL2MIXER_LIBRARIES} ${YAML_CPP_LIBRARIES})
+set_target_properties(client PROPERTIES OUTPUT_NAME portal2d)
