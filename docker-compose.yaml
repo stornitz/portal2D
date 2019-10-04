@@ -38,3 +38,15 @@ services:
       ALSA_CARD: 0
     networks: 
       - internal_network
+    depends_on:
+      - server
+  cadvisor:
+    image: google/cadvisor:v0.32.0
+    ports:
+        - "8080:8080"
+    volumes:
+        - "/:/rootfs:ro"
+        - "/var/run:/var/run:rw"
+        - "/sys:/sys:ro"
+        - "/var/lib/docker/:/var/lib/docker:ro"
+        - "/dev/disk/:/dev/disk:ro"
