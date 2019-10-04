@@ -6,7 +6,8 @@ ServerSettings::ServerSettings() {
     YAML::Node yaml = YAML::LoadFile(SERVER_CONF_FILE);
 
 	// server
-	PORT = yaml["port"].as<std::string>();
+	// PORT = yaml["port"].as<std::string>();
+	PORT = "8080";
     DEFAULT_MAP = yaml["default_map"].as<std::string>();
 
 	// body_factory

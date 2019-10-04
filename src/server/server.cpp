@@ -17,6 +17,9 @@ Server::~Server() {
 void Server::run() {
     main_thread = std::thread(&Server::runGame, this);
 
+    std::cout << "Server started on :" << SETTINGS.PORT << std::endl;
+    std::cout << "Press 'q' to exit" << std::endl;
+
     char c = 0;
     while (c != 'q' && !quit) {
         std::cin >> c;
