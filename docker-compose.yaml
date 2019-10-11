@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile-editor
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
-      - ./editor/editor.html:/app/editor.html
+      - ./editor/editor.html:/app/editor.html:ro
     environment:
       DISPLAY: $DISPLAY
   server:
@@ -24,12 +24,18 @@ services:
       - 8080:8080
     networks: 
       - internal_network
+    volumes:
+      - ./data/conf/server.conf:/app/server.conf:ro
+      - ./data/maps:/app/maps:ro
   client:
     build:
       context: .
       dockerfile: Dockerfile-client
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ./data/conf/client.conf:/app/client.conf:ro
+      - ./data/sounds:/app/sounds:ro
+      - ./data/sprites:/app/sprites:ro
     devices:
       - /dev/snd:/dev/snd
     environment:

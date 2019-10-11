@@ -29,8 +29,5 @@ RUN make
 FROM init-client
 
 COPY --from=builder-client /app/build/portal2d /app/portal2d
-COPY data/conf/client.conf client.conf
-COPY data/sounds ./sounds/
-COPY data/sprites ./sprites/  
 
 ENTRYPOINT [ "/app/portal2d" ]

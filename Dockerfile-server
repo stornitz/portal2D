@@ -26,7 +26,5 @@ RUN make
 FROM init-server
 
 COPY --from=builder-server /app/build/portal2d-server /app/portal2d-server
-COPY data/conf/server.conf server.conf
-COPY data/maps ./maps/
 
 ENTRYPOINT [ "/app/portal2d-server" ]
